@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css" />
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+	</head>
+	<body style="background-image: url(images/pigtime.jpg);">
+		<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-8 col-md-offset-4" id="code_Content">
+			
+		</div>
+	</div>
+</div>
+	<script type="text/javascript">
+	$(function(){
+		var id = GetQueryString("codeId");
+		$.ajax({
+			url:"selCode",
+			type:"get",
+			dataType:"JSON",
+			data:"id="+id,
+			success:function(result){
+				initPage(result);
+			}
+		})
+		
+	});
+	
+	function initPage(result){
+		 var code = result.coreObject.code;
+		 var title = $("<h3></h3>").addClass("text-warning text-center").append(code.title);
+		 var type = $("<div></div").addClass("page-header").append($("<h5></h5>").append(code.type)) 
+		 var content = $("<p></p>").addClass("lead text-left").append(code.content);
+		 var downloadFile = $("<p>如有源码，请点击下载:</p>").addClass("lead text-left").append($("<a></a>").append(code.filename).attr("href","download?filename="+code.filename));
+		 $("#code_Content").append(title).append(type).append(content).append(downloadFile);
+	}
+	
+	function GetQueryString(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if(r != null) return decodeURI(r[2]);
+		return null;
+	}
+	
+	</script>
+	</body>
+</html>

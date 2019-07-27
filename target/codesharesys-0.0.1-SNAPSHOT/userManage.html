@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		
+		<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/jquery.form.js"></script>
+		<script type="text/javascript" src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css" />
+	</head>
+	<body>
+
+
+<!-- 代码编辑的模态框 -->
+<div class="modal fade" id="codeUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">修改用户信息</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" id="sharer_update_form" action="updSharer" method="post">
+        	<div class="form-group">
+		    <label class="col-sm-2 control-label">id</label>
+		    <div class="col-sm-10">
+		      	<p class="form-control-static" id="id_update_static"></p>
+		      	<input type="hidden" name="id" id="idid">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">Name</label>
+		    <div class="col-sm-10">
+		      <input type="text" name="name" class="form-control" id="update_nameid" >
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">Password</label>
+		    <div class="col-sm-10">
+		      <input type="text" name="password" class="form-control" id="update_passwordid" >
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">Gender</label>
+		    <div class="col-sm-10">
+		      <input type="text" name="gender" class="form-control" id="update_genderid" >
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">Age</label>
+		    <div class="col-sm-10">
+		      <input type="text" name="age" class="form-control" id="update_ageid" >
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">Phone</label>
+		    <div class="col-sm-10">
+		      <input type="text" name="phone" class="form-control" id="update_phoneid" >
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+		   <div class="form-group">
+		    <label class="col-sm-2 control-label">Permission</label>
+		    <div class="col-sm-10">
+		      <label class="radio-inline">
+  				<input type="radio" name="permission"  id="permission1" value="0"> 管理員
+			</label>
+			<label class="radio-inline">
+ 		 		<input type="radio" name="permission" id="permission2" value="1"> 普通用戶
+			</label>
+		    </div>
+		  </div>
+					</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="update_btn_id">更新</button>
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+	<!-- 代码添加的模态框 -->
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-offset-3" >
+				<h1>用户管理</h1>
+			</div>
+		</div>
+		
+			
+			<div class="col-md-10">
+			<table class="table table-striped" id="code_List">
+			<thead>
+				<th>id</th>
+				<th>name</th>
+				<th>password</th>
+				<th>gender</th>
+				<th>age</th>
+				<th>phone</th>
+				<th>permission</th>
+				<th>操作</th>
+			</thead>
+			<tbody>
+				
+			</tbody>
+		</table>
+		</div>
+		<div class="row">
+			<!-- 分页文字信息 -->
+			<div class="col-md-6" id="page_info_id"></div>
+			<!-- 显示分页条 -->
+			<div class="col-md-6" id="page_nav_id"></div>
+		</div>
+		</div>
+		<script>
+			var currentPage;
+			var totalCount;
+			$(function(){
+				to_page(1);
+				
+			});
+			function to_page(pn){
+				$.ajax({
+					type:"post",
+					url:"selSharerList",
+					data:"pn="+pn,
+					dataType:"JSON",
+					success:function(result){
+						init_table(result);
+						init_pageInfo(result);
+						init_pageNav(result);
+					}
+				});
+			}
+			function init_table(result){
+				$("#code_List tbody").empty();
+				var sharerList = result.coreObject.pageInfo.list;
+				$.each(sharerList,function(index,item){
+					var id = $("<td></td>").append(item.id);
+					var name = $("<td></td>").append(item.name);
+					var password = $("<td></td>").append(item.password);
+					var gender = $("<td></td>").append(item.gender);
+					var age = $("<td></td>").append(item.age);
+					var phone = $("<td></td>").append(item.phone);
+					var permission = $("<td></td>").append(item.permission);
+					var editBtn = $("<button></button>").addClass("btn btn-primary btn-sm edit_btn")
+					.append($("<span></span>").addClass("glyphicon glyphicon-pencil")).append("编辑");
+	
+					editBtn.attr("edit-id",item.id);
+					var delBtn =  $("<button></button>").addClass("btn btn-danger btn-sm delete_btn")
+					.append($("<span></span>").addClass("glyphicon glyphicon-trash")).append("删除");
+	
+					delBtn.attr("del-id",item.id);
+					var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
+					$("<tr></tr>").append(id).append(name).append(password)
+									.append(gender).append(age)
+									.append(phone).append(permission).append(btnTd).appendTo("#code_List tbody");
+
+				});
+				
+				
+			}
+			function init_pageInfo(result){
+				$("#page_info_id").empty();
+				currentPage = result.coreObject.pageInfo.pageNum;
+				var sumPage = result.coreObject.pageInfo.pages;
+				totalCount = result.coreObject.pageInfo.total;
+				$("#page_info_id").append("当前在第"+currentPage+"页，总共"+sumPage+"页，总共条"+totalCount+"记录");
+			}
+			function init_pageNav(result){
+				//page_nav_area
+				$("#page_nav_id").empty();
+				var ul = $("<ul></ul>").addClass("pagination");
+				
+				//构建元素
+				var firstPageLi = $("<li></li>").append($("<a></a>").append("首页").attr("href","#"));
+				var prePageLi = $("<li></li>").append($("<a></a>").append("&laquo;"));
+				if(result.coreObject.pageInfo.hasPreviousPage == false){
+					firstPageLi.addClass("disabled");
+					prePageLi.addClass("disabled");
+				}else{
+					//为元素添加点击翻页的事件
+					firstPageLi.click(function(){
+						to_page(1);
+					});
+					prePageLi.click(function(){
+						to_page(result.coreObject.pageInfo.pageNum -1);
+					});
+				}
+				
+				
+				var nextPageLi = $("<li></li>").append($("<a></a>").append("&raquo;"));
+				var lastPageLi = $("<li></li>").append($("<a></a>").append("末页").attr("href","#"));
+				if(result.coreObject.pageInfo.hasNextPage == false){
+					nextPageLi.addClass("disabled");
+					lastPageLi.addClass("disabled");
+				}else{
+					nextPageLi.click(function(){
+						to_page(result.coreObject.pageInfo.pageNum +1);
+					});
+					lastPageLi.click(function(){
+						to_page(result.coreObject.pageInfo.pages);
+					});
+				}
+				
+				
+				
+				//添加首页和前一页 的提示
+				ul.append(firstPageLi).append(prePageLi);
+				//1,2，3遍历给ul中添加页码提示
+				$.each(result.coreObject.pageInfo.navigatepageNums,function(index,item){
+					
+					var numLi = $("<li></li>").append($("<a></a>").append(item));
+					if(result.coreObject.pageInfo.pageNum == item){
+						numLi.addClass("active");
+					}
+					numLi.click(function(){
+						to_page(item);
+					});
+					ul.append(numLi);
+				});
+				//添加下一页和末页 的提示
+				ul.append(nextPageLi).append(lastPageLi);
+				
+				//把ul加入到nav
+				var navEle = $("<nav></nav>").append(ul);
+				navEle.appendTo("#page_nav_id");
+			}
+	
+			
+			<!--点击 编辑初始化模态框-->
+			$(document).on("click",".edit_btn",function(){
+				
+				var id = $(this).attr("edit-id");
+				$.ajax({
+					type:"post",
+					dataType:"JSON",
+					url:"selSharerOne",
+					data:"id="+id,
+					success:function(result){
+						var sharer = result.coreObject.sharer;
+						$("#id_update_static").text(sharer.id);
+						$("#idid").val(sharer.id);
+						$("#update_nameid").val(sharer.name);
+						$("#update_passwordid").val(sharer.password);
+						$("#update_ageid").val(sharer.age);
+						$("#update_genderid").val(sharer.gender);
+						$("#update_phoneid").val(sharer.phone);
+						$("#sharer_update_form input[name='permission'][value="+sharer.permission+"]").attr("checked",true);
+						$("#user_update_input").val(sharer.permission);
+						
+					}
+				});
+				$("#codeUpdateModal").modal({
+					 backdrop:"static"
+				 });
+			});
+			
+			<!--点击编辑按钮中的更新按钮提交表单数据-->
+			$("#update_btn_id").click(function(){
+				$("#sharer_update_form").ajaxSubmit(function(){
+					alert("提交成功！");
+					$("#codeUpdateModal").modal("hide");
+					to_page(currentPage);
+				});
+					
+				
+			});
+			
+			<!--查找语言类型-->
+			function findLanguageType(){
+				$.ajax({
+					type:"post",
+					url:"selLanguage",
+					dataType:"JSON",
+					success:function(result){
+						var language = result.coreObject.languageList;
+						$.each(language,function(index,item){
+							$("#add_languageid").append($("<option></option>").append(item.language));
+							
+						});
+						
+					}
+				});
+			}
+			function findTypeOnUpdate(){
+				$.ajax({
+					type:"post",
+					url:"selLanguage",
+					dataType:"JSON",
+					success:function(result){
+						var language = result.coreObject.languageList;
+						$.each(language,function(index,item){
+							$("#update_languageid").append($("<option></option>").append(item.language));
+							
+						});
+						
+					}
+				});
+			}
+			
+			$(document).on("click",".delete_btn",function(){
+				var id = $(this).attr("del-id");
+				if(confirm("确认删除吗？")){
+					$.ajax({
+						type:"get",
+						dataType:"JSON",
+						url:"delSharer?id="+id,
+						success:function(result){
+							alert(result.msg);
+							to_page(currentPage);
+						}
+					});
+				}
+				
+			});
+			
+		</script>
+	</body>
+</html>
+
+
+
+

@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+        <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="css/style.css"/>       
+        <link href="assets/css/codemirror.css" rel="stylesheet">
+        <link rel="stylesheet" href="assets/css/ace.min.css" />
+        <link rel="stylesheet" href="font/css/font-awesome.min.css" />
+        <!--[if lte IE 8]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/jquery.form.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+		<script src="assets/js/typeahead-bs2.min.js"></script>  	         	
+        <script src="assets/layer/layer.js" type="text/javascript" ></script>          
+        <script src="assets/laydate/laydate.js" type="text/javascript"></script>
+        <script src="js/H-ui.js" type="text/javascript"></script>
+<title>添加文章</title>
+</head>
+
+<body>
+<div class="margin clearfix">
+ <div class="article_style">
+    <div class="add_content" id="form-article-add">
+    <form id="form_code" action="insCode" method="post" >
+     <ul>
+      <li class="clearfix Mandatory">
+      <label class="label_name"><i>*</i>文章标题</label><span class="formControls col-10"><input name="title" type="text" id="form-field-1" class="col-xs-10 col-sm-5 "></span>
+      </li>
+      <li class="clearfix Mandatory">
+      <label class="label_name"><i>*</i>文章简介</label><span class="formControls col-10"><input name="introduction" type="text"  id="form-field-2" class="col-xs-10 col-sm-5 "></span>
+      </li>
+      <li class="clearfix"><label class="label_name"><i>*</i>所属分类</label>
+       <span class="formControls col-4"><select name="type" class="form-control" id="form-field-select-1">
+          <option value="">--选择所属分类--</option>
+          <option value="1">java</option>
+          <option value="2">c</option>
+          <option value="3">c++</option>
+          <option value="4">c#</option>
+          <option value="5">ruby</option>
+          <option value="6">python</option>
+       </select>
+       </span>
+      </li>
+      <li class="clearfix"><label class="label_name"><i>*</i>源代码</label>	
+      	<span class="formControls col-4">
+      	<input type="file" name="file" id="file"/>
+      	</span>    	
+      	</li>
+      <li class="clearfix"><label class="label_name">文章内容</label>
+      <span class="formControls col-10"><script id="editor" name="content" type="text/plain" style="width:100%;height:400px; margin-left:10px;">
+		
+
+		</script> </span>
+      </li>
+     </ul>
+    <div class="Button_operation">
+				<button id="submit_btn" class="btn btn-primary radius" type="button">保存并提交</button>
+				<button onclick="article_save();" class="btn btn-secondary  btn-warning" type="button">保存草稿</button>
+				<button onclick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+	</form>
+    </div>
+ </div>
+</div>
+<script type="text/javascript" src="Widget/ueditor/1.4.3/ueditor.config.js"></script>
+<script type="text/javascript" src="Widget/ueditor/1.4.3/ueditor.all.min.js"> </script>
+<script type="text/javascript" src="Widget/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script> 
+
+
+<script>
+$(function(){
+	var ue = UE.getEditor('editor');
+	var id = GetQueryString("id");
+	$.ajax({
+		type:"post",
+		dataType:"JSON",
+		data:"id="+id,
+		url:"selCode",
+		success:function(result){
+			var code = result.coreObject.code;
+			$("#form-field-1").val(code.title);
+			$("#form-field-2").val(code.introduction);
+			$("#form-field-select-1").val([code.type]);
+			ue.ready(function(){
+				ue.setContent(code.content);
+			});
+			
+		}
+	});
+	
+	 $("#submit_btn").click(function(){
+		  $("#form_code").ajaxSubmit(function(){
+			  alert("提交成功！");
+		  });
+	});
+	
+});
+
+		function GetQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if(r != null) return decodeURI(r[2]);
+			return null;
+		}
+
+/*radio激发事件*/
+function Enable(){ $('.date_Select').css('display','block');}
+function closes(){$('.date_Select').css('display','none')}
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css" />
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+		
+	</head>
+	<body>
+		<div class="container">
+		<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h3 class="text-warning">
+				欢迎来到代码共享中心.
+			</h3>
+			<nav class="navbar navbar-default navbar-static-top" role="navigation">
+				<div class="navbar-header">
+					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Code</a>
+				</div>
+				
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					
+					<form class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							<input type="text" class="form-control" />
+						</div> <button type="submit" class="btn btn-default">Search</button>
+					</form>
+					
+				</div>
+				
+			</nav>
+			<div class="jumbotron" style="background-color: #B0D877;">
+				<h1>
+					Hello, world!
+				</h1>
+				<p>
+					欢迎来到代码共享中心，以下是近期的博文推荐。
+				</p>
+				
+			</div>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8" id="code_list">
+						
+					</div>
+					
+				</div>
+
+		</div>
+			
+			</div>
+		</div>
+	</div>
+	<script>
+	
+		$(function(){
+			
+			to_page(1);
+			var pos = 0;
+		    var LIST_ITEM_SIZE = 100;
+		    //滚动条距底部的距离
+		    var BOTTOM_OFFSET = 0;
+		    var i = 1;
+		    $(document).ready(function () {
+		        $(window).scroll(function () {
+		            var $currentWindow = $(window);
+		            //当前窗口的高度
+		            var windowHeight = $currentWindow.height();
+		            console.log("current widow height is " + windowHeight);
+		            //当前滚动条从上往下滚动的距离
+		            var scrollTop = $currentWindow.scrollTop();
+		            console.log("current scrollOffset is " + scrollTop);
+		            //当前文档的高度
+		            var docHeight = $(document).height();
+		            console.log("current docHeight is " + docHeight);
+		 
+		            //当 滚动条距底部的距离 + 滚动条滚动的距离 >= 文档的高度 - 窗口的高度
+		            //换句话说：（滚动条滚动的距离 + 窗口的高度 = 文档的高度）  这个是基本的公式
+		            if ((BOTTOM_OFFSET + scrollTop)+10 >= docHeight - windowHeight) {
+		                createListItems(++i);
+		                
+		            }
+		        });
+		    });
+		 
+		    function createListItems(pn) {
+		    	to_page(pn);
+		    }
+			
+		});
+		
+		
+		function to_page(pn){
+			var urll = window.location.href;
+			var attr = urll.split("=");
+			var type = attr[1];	
+			$.ajax({
+				url:"selTypeCodeList",
+				type:"post",
+				dataType:"JSON",
+				data:{"pn":pn,"type":type},
+				success:function(result){
+					build_codeList(result);
+				}
+			})
+		}
+		function build_codeList(result){
+			var codeList = result.coreObject.pageInfo.list;
+			$.each(codeList, function(index,item) {
+				var title = $("<h2></h2>").append($("<a></a>").append(item.title));
+				var introduction = $("<p></p>").append(item.introduction);
+				var author = $("<h5></h5>").append("博主：张三");
+				title.click(function(){
+					window.location.href="detailPage.html?codeId="+item.id;
+				});
+				
+				
+				$("#code_list").append(title).append(introduction).append(author);
+				
+			});
+		}		
+		
+	</script>
+	</body>
+</html>

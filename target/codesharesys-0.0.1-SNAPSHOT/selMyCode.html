@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		
+		<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/jquery.form.js"></script>
+		<script type="text/javascript" src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css" />
+	</head>
+	<body>
+
+
+<!-- 代码编辑的模态框 -->
+<div class="modal fade" id="codeUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">博文更新</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" id="article_updata_form" action="updCode" method="post">
+        	<div class="form-group">
+		    <label class="col-sm-2 control-label">id</label>
+		    <div class="col-sm-10">
+		      	<p class="form-control-static" name="id" id="id_update_static"></p>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">Title</label>
+		    <div class="col-sm-10">
+		      <input type="text" name="title" class="form-control" id="update_titleid" >
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">LanguageType</label>
+		    <div class="col-sm-4">
+		    	<!-- type提交languageid即可 -->
+		      <select class="form-control" id="update_languageid" name="type">
+		      </select>
+		    </div>
+		  </div>
+		   <div class="form-group">
+		    <label class="col-sm-2 control-label">Introduction</label>
+		    <div class="col-sm-10">
+		      <input type="text" name="introduction" class="form-control" id="code_update_input" >
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">File input</label> 
+					<div class="col-sm-10">
+					<input type="file" name="file" id="exampleInputFile">
+					</div>
+				</div>
+					</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="update_btn">更新</button>
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+	<!-- 代码添加的模态框 -->
+<div class="modal fade" id="codeAddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">博文添加</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" id="article_form" action="insCode" method="post">
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">Title</label>
+		    <div class="col-sm-10">
+		      <input type="text" name="title" class="form-control" id="titleid" placeholder="title">
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+		  
+		  <div class="form-group">
+		    <label class="col-sm-2 control-label">LanguageType</label>
+		    <div class="col-sm-4">
+		    	<!-- type提交languageid即可 -->
+		      <select class="form-control" id="add_languageid" name="type">
+		      </select>
+		    </div>
+		  </div>
+		   <div class="form-group">
+		    <label class="col-sm-2 control-label">Introduction</label>
+		    <div class="col-sm-10">
+		      <input type="text" name="introduction" class="form-control" id="email_add_input" placeholder="introduction">
+		      <span class="help-block"></span>
+		    </div>
+		  </div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">File input</label> 
+					<div class="col-sm-10">
+					<input type="file" name="file" id="exampleInputFile">
+					</div>
+				</div>
+					</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="submit_btn">提交</button>
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-offset-3" >
+				<h1>博文管理</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4 col-md-offset-8">
+				<button class="btn btn-primary" id="code-add-modal">新增</button>
+			</div>
+		</div>
+			
+			<div class="col-md-10">
+			<table class="table table-striped" id="code_List">
+			<thead>
+				<th>id</th>
+				<th>title</th>
+				<th>type</th>
+				<th>intro</th>
+				<th>filename</th>
+				<th>sharerId</th>
+				<th>操作</th>
+			</thead>
+			<tbody>
+				
+			</tbody>
+		</table>
+		</div>
+		<div class="row">
+			<!-- 分页文字信息 -->
+			<div class="col-md-6" id="page_info_id"></div>
+			<!-- 显示分页条 -->
+			<div class="col-md-6" id="page_nav_id"></div>
+		</div>
+		</div>
+		<script>
+			var currentPage;
+			var totalCount;
+			$(function(){
+				to_page(1);
+				
+			});
+			function to_page(pn){
+				$.ajax({
+					type:"post",
+					url:"selMyCodeList",
+					data:"pn="+pn,
+					dataType:"JSON",
+					success:function(result){
+						init_table(result);
+						init_pageInfo(result);
+						init_pageNav(result);
+					}
+				});
+			}
+			function init_table(result){
+				$("#code_List tbody").empty();
+				var codeList = result.coreObject.pageInfo.list;
+				$.each(codeList,function(index,item){
+					var id = $("<td></td>").append(item.id);
+					var title = $("<td></td>").append(item.title);
+					var type = $("<td></td>").append(item.type);
+					var intro = $("<td></td>").append(item.introduction);
+					var filename = $("<td></td>").append(item.filename);
+					var shareId = $("<td></td>").append(item.shareid);
+					var editBtn = $("<button></button>").addClass("btn btn-primary btn-sm edit_btn")
+					.append($("<span></span>").addClass("glyphicon glyphicon-pencil")).append("编辑");
+	
+					editBtn.attr("edit-id",item.id);
+					var delBtn =  $("<button></button>").addClass("btn btn-danger btn-sm delete_btn")
+					.append($("<span></span>").addClass("glyphicon glyphicon-trash")).append("删除");
+	
+					delBtn.attr("del-id",item.id);
+					var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
+					$("<tr></tr>").append(id).append(title).append(type)
+									.append(intro).append(filename)
+									.append(shareId).append(btnTd).appendTo("#code_List tbody");
+
+				});
+				
+				
+			}
+			function init_pageInfo(result){
+				$("#page_info_id").empty();
+				currentPage = result.coreObject.pageInfo.pageNum;
+				var sumPage = result.coreObject.pageInfo.pages;
+				totalCount = result.coreObject.pageInfo.total;
+				$("#page_info_id").append("当前在第"+currentPage+"页，总共"+sumPage+"页，总共条"+totalCount+"记录");
+			}
+			function init_pageNav(result){
+				//page_nav_area
+				$("#page_nav_id").empty();
+				var ul = $("<ul></ul>").addClass("pagination");
+				
+				//构建元素
+				var firstPageLi = $("<li></li>").append($("<a></a>").append("首页").attr("href","#"));
+				var prePageLi = $("<li></li>").append($("<a></a>").append("&laquo;"));
+				if(result.coreObject.pageInfo.hasPreviousPage == false){
+					firstPageLi.addClass("disabled");
+					prePageLi.addClass("disabled");
+				}else{
+					//为元素添加点击翻页的事件
+					firstPageLi.click(function(){
+						to_page(1);
+					});
+					prePageLi.click(function(){
+						to_page(result.coreObject.pageInfo.pageNum -1);
+					});
+				}
+				
+				
+				var nextPageLi = $("<li></li>").append($("<a></a>").append("&raquo;"));
+				var lastPageLi = $("<li></li>").append($("<a></a>").append("末页").attr("href","#"));
+				if(result.coreObject.pageInfo.hasNextPage == false){
+					nextPageLi.addClass("disabled");
+					lastPageLi.addClass("disabled");
+				}else{
+					nextPageLi.click(function(){
+						to_page(result.coreObject.pageInfo.pageNum +1);
+					});
+					lastPageLi.click(function(){
+						to_page(result.coreObject.pageInfo.pages);
+					});
+				}
+				
+				
+				
+				//添加首页和前一页 的提示
+				ul.append(firstPageLi).append(prePageLi);
+				//1,2，3遍历给ul中添加页码提示
+				$.each(result.coreObject.pageInfo.navigatepageNums,function(index,item){
+					
+					var numLi = $("<li></li>").append($("<a></a>").append(item));
+					if(result.coreObject.pageInfo.pageNum == item){
+						numLi.addClass("active");
+					}
+					numLi.click(function(){
+						to_page(item);
+					});
+					ul.append(numLi);
+				});
+				//添加下一页和末页 的提示
+				ul.append(nextPageLi).append(lastPageLi);
+				
+				//把ul加入到nav
+				var navEle = $("<nav></nav>").append(ul);
+				navEle.appendTo("#page_nav_id");
+			}
+			<!--点击 新增初始化模态框-->
+			$("#code-add-modal").click(function(){
+				
+				 findLanguageType();
+				
+				 $("#codeAddModal").modal({
+					 backdrop:"static"
+				 });
+			});
+			<!--点击新增按钮中的提交按钮提交表单数据-->
+			$("#submit_btn").click(function(){
+				 $("#article_form").ajaxSubmit(function(){
+					  alert("提交成功！");
+				  });
+			});
+			<!--点击 编辑初始化模态框-->
+			$(document).on("click",".edit_btn",function(){
+				var id = $(this).attr("edit-id");
+				window.location.href="article_add.html?id="+id;
+			});
+			<!--查找语言类型-->
+			function findLanguageType(){
+				$.ajax({
+					type:"post",
+					url:"selLanguage",
+					dataType:"JSON",
+					success:function(result){
+						var language = result.coreObject.languageList;
+						$.each(language,function(index,item){
+							$("#add_languageid").append($("<option></option>").append(item.language));
+							
+						});
+						
+					}
+				});
+			}
+			function findTypeOnUpdate(){
+				$.ajax({
+					type:"post",
+					url:"selLanguage",
+					dataType:"JSON",
+					success:function(result){
+						var language = result.coreObject.languageList;
+						$.each(language,function(index,item){
+							$("#update_languageid").append($("<option></option>").append(item.language));
+							
+						});
+						
+					}
+				});
+			}
+			<!--点击编辑按钮中的更新按钮提交表单数据-->
+			$("#update_btn").click(function(){
+				alert("跟新功能待开发！")
+			});
+			$(document).on("click",".delete_btn",function(){
+				var id = $(this).attr("del-id");
+				if(confirm("确认删除吗？")){
+					$.ajax({
+						type:"get",
+						dataType:"JSON",
+						url:"delCode?id="+id,
+						success:function(result){
+							alert(result.msg);
+							to_page(currentPage);
+						}
+					});
+				}
+				
+			});
+			
+		</script>
+	</body>
+</html>
+
+
+
+
